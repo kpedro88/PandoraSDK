@@ -405,7 +405,7 @@ private:
         unsigned int            m_nHits;                        ///< The number of hits in the pseudo layer
     };
 
-    typedef std::map<unsigned int, SimplePoint> PointByPseudoLayerMap;///< The point by pseudo layer typedef
+    typedef std::vector<SimplePoint> PointByPseudoLayerMap;     ///< The point by pseudo layer typedef
     typedef std::map<HitType, float> HitTypeToEnergyMap;        ///< The hit type to energy map typedef
 
     OrderedCaloHitList          m_orderedCaloHitList;           ///< The ordered calo hit list
