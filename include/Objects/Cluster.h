@@ -407,7 +407,7 @@ private:
 		SimplePoint() : m_xyzPosition(0.f,0.f,0.f), m_nHits(0) {}
     };
 
-    typedef std::map<unsigned int, SimplePoint> PointByPseudoLayerMap;///< The point by pseudo layer typedef
+    typedef std::vector<SimplePoint> PointByPseudoLayerMap;     ///< The point by pseudo layer typedef
     typedef std::map<HitType, float> HitTypeToEnergyMap;        ///< The hit type to energy map typedef
 
     OrderedCaloHitList          m_orderedCaloHitList;           ///< The ordered calo hit list
