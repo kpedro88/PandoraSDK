@@ -160,9 +160,11 @@ StatusCode Cluster::RemoveCaloHit(const CaloHit *const pCaloHit)
     else
     {
         SimplePoint &mypoint = m_sumXYZByPseudoLayer[pseudoLayer];
-        mypoint.m_xyzPositionSums[0] = 0.f;
-        mypoint.m_xyzPositionSums[1] = 0.f;
-        mypoint.m_xyzPositionSums[2] = 0.f;
+		mypoint.m_xyzPosition.SetValues(
+                                        0.f,
+                                        0.f,
+                                        0.f
+        );
         mypoint.m_nHits = 0;
     }
 
