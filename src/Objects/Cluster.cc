@@ -93,8 +93,6 @@ StatusCode Cluster::AddCaloHit(const CaloHit *const pCaloHit)
     m_hadronicEnergy += pCaloHit->GetHadronicEnergy();
 
     const unsigned int pseudoLayer(pCaloHit->GetPseudoLayer());
-    if( pseudoLayer >= m_sumXYZByPseudoLayer.size() ) m_sumXYZByPseudoLayer.resize(pseudoLayer+1);
-
     OrderedCaloHitList::const_iterator iter = m_orderedCaloHitList.find(pseudoLayer);
 
     if ((m_orderedCaloHitList.end() != iter) && (iter->second->size() > 1))
@@ -161,11 +159,7 @@ StatusCode Cluster::RemoveCaloHit(const CaloHit *const pCaloHit)
     }
     else
     {
-        SimplePoint &mypoint = m_sumXYZByPseudoLayer[pseudoLayer];
-        mypoint.m_xyzPositionSums[0] = 0.f;
-        mypoint.m_xyzPositionSums[1] = 0.f;
-        mypoint.m_xyzPositionSums[2] = 0.f;
-        mypoint.m_nHits = 0;
+        m_sumXYZByPseudoLayer.erase(pseudoLayer);
     }
 
     if (pseudoLayer <= m_innerPseudoLayer.Get())
@@ -221,10 +215,12 @@ StatusCode Cluster::RemoveIsolatedCaloHit(const CaloHit *const pCaloHit)
 
 const CartesianVector Cluster::GetCentroid(const unsigned int pseudoLayer) const
 {
-    if ( m_sumXYZByPseudoLayer.size() <= pseudoLayer )
+    PointByPseudoLayerMap::const_iterator pointValueIter = m_sumXYZByPseudoLayer.find(pseudoLayer);
+
+    if (m_sumXYZByPseudoLayer.end() == pointValueIter)
         throw StatusCodeException(STATUS_CODE_FAILURE);
 
-    const SimplePoint &mypoint = m_sumXYZByPseudoLayer[pseudoLayer];
+    const SimplePoint &mypoint = pointValueIter->second;
 
     if (0 == mypoint.m_nHits)
         throw StatusCodeException(STATUS_CODE_FAILURE);
@@ -376,7 +372,7 @@ StatusCode Cluster::ResetProperties()
     m_nPossibleMipHits = 0;
     m_nCaloHitsInOuterLayer = 0;
 
-    m_sumXYZByPseudoLayer.resize(0);
+    m_sumXYZByPseudoLayer.clear();
 
     m_electromagneticEnergy = 0;
     m_hadronicEnergy = 0;
@@ -441,8 +437,6 @@ StatusCode Cluster::AddHitsFromSecondCluster(const Cluster *const pCluster)
     {
         const unsigned int pseudoLayer(iter->first);
         OrderedCaloHitList::const_iterator currentIter = m_orderedCaloHitList.find(pseudoLayer);
-
-        if( pseudoLayer >=  m_sumXYZByPseudoLayer.size() )  m_sumXYZByPseudoLayer.resize(pseudoLayer+1);
 
         SimplePoint &mypoint = m_sumXYZByPseudoLayer[pseudoLayer];
         const SimplePoint &theirpoint = pCluster->m_sumXYZByPseudoLayer.at(pseudoLayer);
