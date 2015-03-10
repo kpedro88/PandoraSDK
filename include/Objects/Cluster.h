@@ -149,7 +149,7 @@ public:
      * 
      *  @return The unweighted centroid, returned by value
      */
-    const CartesianVector GetCentroid(const unsigned int pseudoLayer) const;
+    const CartesianVector& GetCentroid(const unsigned int pseudoLayer) const;
 
     /**
      *  @brief  Get the initial direction of the cluster
@@ -401,8 +401,10 @@ private:
     class SimplePoint
     {
     public:
-        double                  m_xyzPositionSums[3];           ///< The sum of the x, y and z hit positions in the pseudo layer
+        CartesianVector         m_xyzPosition;                  ///< The average x, y and z hit positions in the pseudo layer
         unsigned int            m_nHits;                        ///< The number of hits in the pseudo layer
+		//default constructor because CartesianVector doesn't have one
+		SimplePoint() : m_xyzPosition(0.f,0.f,0.f), m_nHits(0) {}
     };
 
     typedef std::vector<SimplePoint> PointByPseudoLayerMap;     ///< The point by pseudo layer typedef
